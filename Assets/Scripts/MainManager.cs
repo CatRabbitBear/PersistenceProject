@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class MainManager : MonoBehaviour
 {
@@ -11,14 +13,23 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text highscoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+    private string currentPlayer;
 
-    
+    private void Awake()
+    {
+        highscoreText.text = "Highscore: " + DataManager.Instance.highscoreName + " : " + DataManager.Instance.highscore;
+        currentPlayer = DataManager.Instance.playerName;
+        m_Points = 0;
+        ScoreText.text = "Player: " + currentPlayer + " Score: " + m_Points;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,12 +76,15 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = "Player: " + currentPlayer + " Score: " + m_Points;
     }
 
     public void GameOver()
     {
         m_GameOver = true;
+        DataManager.Instance.currentScore = m_Points;
+        DataManager.Instance.SaveHighscore();
         GameOverText.SetActive(true);
     }
+    
 }
